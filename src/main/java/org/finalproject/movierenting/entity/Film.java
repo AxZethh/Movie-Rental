@@ -3,6 +3,7 @@ package org.finalproject.movierenting.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.finalproject.movierenting.enums.Prices;
+import org.finalproject.movierenting.enums.FilmType;
 
 
 import java.util.Date;
@@ -16,6 +17,7 @@ public class Film {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String title;
+    private FilmType filmType;
     private Prices priceType;
     private Date releaseDate;
     private Date added;
