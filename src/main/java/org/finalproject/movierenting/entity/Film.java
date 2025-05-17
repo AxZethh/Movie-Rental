@@ -19,6 +19,7 @@ public class Film {
     private String title;
     private FilmType filmType;
     private Prices priceType;
+    private int rentalDuration; // In days
     private Date releaseDate;
     private Date added;
 

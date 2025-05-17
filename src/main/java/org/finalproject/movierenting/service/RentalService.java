@@ -1,13 +1,12 @@
 package org.finalproject.movierenting.service;
 
 
-import org.finalproject.movierenting.entity.Film;
 import org.finalproject.movierenting.entity.Rental;
-import org.finalproject.movierenting.enums.Prices;
+import org.finalproject.movierenting.enums.PaymentType;
 import org.finalproject.movierenting.repository.RentalRepository;
+import org.finalproject.movierenting.util.RentalUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,9 +14,11 @@ import java.util.UUID;
 public class RentalService {
 
     private final RentalRepository rentalRepository;
+    private final RentalUtil rentalUtil;
 
-    public RentalService(RentalRepository rentalRepository) {
+    public RentalService(RentalRepository rentalRepository, RentalUtil rentalUtil) {
         this.rentalRepository = rentalRepository;
+        this.rentalUtil = rentalUtil;
     }
 
     public Rental getRental(UUID id) {
@@ -25,55 +26,26 @@ public class RentalService {
     }
 
     public List<String> saveRental(Rental rental) {
+        PaymentType paymentType = rental.getPaymentType();
         if(rental.getFilms().isEmpty()) {
             return null;
         }
-
-        rental.setTotalPrice(calculatePrice(rental.getFilms(), rental.getDaysRented()));
-        rental.getConsumer().setBonusPoints(rental.getConsumer()
-                .getBonusPoints() + rentalBonus(rental.getFilms()));
+        if(paymentType == PaymentType.BONUS) {
+            rental.setTotalPrice(0);
+            rental.getConsumer().setBonusPoints(rentalUtil.calcUsedBonus(rental.getFilms()));
+            return rentalUtil.getReceipt(rental);
+        }
+        rental.setTotalPrice(rentalUtil.calculateTotalPrice(rental.getFilms()));
+        // Slightly weird execution,however I'm doing it this way to avoid overwriting the consumer connected to the Rental
+        rental.getConsumer().setBonusPoints(
+                rental.getConsumer()
+                .getBonusPoints() + rentalUtil.calcGainedBonus(rental.getFilms()));
 
         rentalRepository.save(rental);
-        return getReceipt(rental);
+        return rentalUtil.getReceipt(rental);
     }
 
-    public int calculatePrice(List<Film> films, int timeInDays) {
-        int price = 0;
-        for(Film film : films) {
-            price += film.getPriceType().getPrice();
-        }
-        return price * timeInDays;
-    }
 
-    public int rentalBonus(List<Film> films) {
-        int bonus = 0;
-        if(films.isEmpty()) {
-            return bonus;
-        }
-        for(Film film : films) {
-            if(film.getPriceType() == Prices.PREMIUM_PRICE) {
-                bonus += 2;
-            }
-            bonus++;
-        }
-        return bonus;
-    }
-
-    public List<String> getReceipt(Rental rental) {
-        int size = rental.getFilms().size();
-        List<String> receipt = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            Film film = rental.getFilms().get(i);
-            receipt.add(String.format("%s ( %s ) %d days %d EUR",
-                    film.getTitle(),
-                    film.getFilmType(),
-                    rental.getDaysRented(),
-                    film.getPriceType().getPrice() * rental.getDaysRented()));
-        }
-        receipt.add("Total Price: " + rental.getTotalPrice() + " EUR");
-        return receipt;
-    }
 
 
 

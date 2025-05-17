@@ -2,6 +2,7 @@ package org.finalproject.movierenting.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.finalproject.movierenting.enums.PaymentType;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,9 +16,8 @@ public class Rental {
     private UUID id;
     @ManyToOne
     private Consumer consumer;
-    private int daysRented;
     private int totalPrice;
     @OneToMany
     private List<Film> films;
-
+    private PaymentType paymentType;
 }

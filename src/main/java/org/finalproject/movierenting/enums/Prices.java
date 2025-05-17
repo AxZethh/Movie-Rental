@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum Prices {
     BASIC_PRICE(3),
-    PREMIUM_PRICE(4);
+    PREMIUM_PRICE(4),
+    BONUS_PRICE(25);
 
     private final int price;
 

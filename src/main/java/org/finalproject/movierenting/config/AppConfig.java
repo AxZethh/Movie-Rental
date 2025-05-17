@@ -11,4 +11,9 @@ public class AppConfig {
     public ModelMapper getMapper() {
         return new ModelMapper();
     }
+
+    @Bean
+    public StringBuilder getStringBuilder() {
+        return new StringBuilder();
+    }
 }
