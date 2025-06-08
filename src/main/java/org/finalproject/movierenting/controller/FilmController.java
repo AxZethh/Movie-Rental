@@ -27,13 +27,20 @@ public class FilmController {
         return ResponseEntity.ok(films);
     }
 
+    @GetMapping("getAvailableFilms")
+    public ResponseEntity<List<Film>> getAvailableFilms() {
+        List<Film> films = filmService.getAvailableFilms();
+        if(films.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(films);
+    }
+
     @GetMapping("getFilm/{id}")
     public ResponseEntity<Film> getFilm(@PathVariable UUID id) {
-        Film film = filmService.getFilm(id);
-        if(film == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(film);
+        return filmService.getFilm(id)
+                .map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("addFilm")

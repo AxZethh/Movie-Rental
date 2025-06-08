@@ -14,7 +14,6 @@ public class RentalUtil {
 
     private final int priceInBonus = 25;
 
-
     public List<String> getReceipt(Rental rental) {
         List<String> receipt = new ArrayList<>();
         PaymentType paymentType = rental.getPaymentType();

@@ -1,10 +1,13 @@
 package org.finalproject.movierenting.service;
 
 
+import org.finalproject.movierenting.dto.RentalDTO;
 import org.finalproject.movierenting.entity.Rental;
 import org.finalproject.movierenting.enums.PaymentType;
 import org.finalproject.movierenting.repository.RentalRepository;
 import org.finalproject.movierenting.util.RentalUtil;
+import org.modelmapper.ModelMapper;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,18 +18,27 @@ public class RentalService {
 
     private final RentalRepository rentalRepository;
     private final RentalUtil rentalUtil;
+    private final ModelMapper modelMapper;
 
-    public RentalService(RentalRepository rentalRepository, RentalUtil rentalUtil) {
+    public RentalService(RentalRepository rentalRepository, RentalUtil rentalUtil, ModelMapper modelMapper) {
         this.rentalRepository = rentalRepository;
         this.rentalUtil = rentalUtil;
+        this.modelMapper = modelMapper;
     }
 
     public Rental getRental(UUID id) {
        return rentalRepository.findById(id).orElseThrow();
     }
 
-    public List<String> saveRental(Rental rental) {
+    public List<RentalDTO> getRentals() {
+        return rentalRepository.findAll().stream()
+                .map(rental -> modelMapper.map(rental, RentalDTO.class)).toList();
+    }
+
+    public List<String> saveRental(RentalDTO rentalDTO) {
+        Rental rental = modelMapper.map(rentalDTO, Rental.class);
         PaymentType paymentType = rental.getPaymentType();
+
         if(rental.getFilms().isEmpty()) {
             return null;
         }
@@ -45,8 +57,13 @@ public class RentalService {
         return rentalUtil.getReceipt(rental);
     }
 
-
-
+    public String deleteRental(UUID id) {
+        if(!rentalRepository.existsById(id)) {
+            return null;
+        }
+        rentalRepository.deleteById(id);
+        return "Rental deleted successfully!";
+    }
 
 
 

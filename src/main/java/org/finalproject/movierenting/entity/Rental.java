@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.finalproject.movierenting.enums.PaymentType;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,4 +21,5 @@ public class Rental {
     @OneToMany
     private List<Film> films;
     private PaymentType paymentType;
+    private Date rentalDate;
 }

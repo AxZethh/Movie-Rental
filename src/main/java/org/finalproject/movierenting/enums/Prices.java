@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum Prices {
     BASIC_PRICE(3),
     PREMIUM_PRICE(4),
-    BONUS_PRICE(25);
+    BONUS_PRICE(25); // points
 
     private final int price;
 

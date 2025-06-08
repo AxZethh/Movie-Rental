@@ -1,46 +1,50 @@
 package org.finalproject.movierenting.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.finalproject.movierenting.dto.FilmDTO;
 import org.finalproject.movierenting.entity.Film;
 import org.finalproject.movierenting.repository.FilmRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import java.util.List;
-import java.util.UUID;
-
+@Slf4j
 @Service
 public class FilmService {
 
     private final FilmRepository filmRepository;
     private final ModelMapper modelMapper;
-
     public FilmService(FilmRepository filmRepository, ModelMapper modelMapper) {
         this.filmRepository = filmRepository;
         this.modelMapper = modelMapper;
     }
 
     public List<Film> getFilms() {
-        List<Film> films;
-        try {
-            films = filmRepository.findAll();
-        } catch (RuntimeException e) {
-            return new ArrayList<>();
-        }
-        return films;
+        return filmRepository.findAll();
     }
 
-    public Film getFilm(UUID id) {
-        return filmRepository.findById(id).orElse(null);
+    public List<Film> getAvailableFilms() {
+        return filmRepository.findByAvailable(true);
+    }
+
+    public Optional<Film> getFilm(UUID id) {
+        return filmRepository.findById(id);
     }
 
     public void saveFilm(FilmDTO filmDTO) {
         filmRepository.save(modelMapper.map(filmDTO, Film.class));
     }
 
-
+    public String deleteFilm(UUID id) {
+        if(!filmRepository.existsById(id)) {
+            log.error("Film with id: {} does not exist!", id);
+            throw new NoSuchElementException("Film with id: " + id + " does not exist!");
+        }
+        filmRepository.deleteById(id);
+        return "Film Deleted Successfully!";
+    }
 
 
 
