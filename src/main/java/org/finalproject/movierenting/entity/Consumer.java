@@ -22,4 +22,3 @@ public class Consumer {
     private ConsumerPermission permission;
     private int bonusPoints;
 }
-git
