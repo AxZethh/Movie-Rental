@@ -38,9 +38,11 @@ public class FilmController {
 
     @GetMapping("getFilm/{id}")
     public ResponseEntity<Film> getFilm(@PathVariable UUID id) {
-        return filmService.getFilm(id)
-                .map(ResponseEntity::ok)
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Film film = filmService.getFilm(id);
+        if(film != null) {
+            return ResponseEntity.ok(film);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("addFilm")

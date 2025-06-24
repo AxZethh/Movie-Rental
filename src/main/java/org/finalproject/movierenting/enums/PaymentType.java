@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum PaymentType {
     CARD("Card"),
-    CASH("Cash"),
+
     BONUS("Bonus");
 
     private final String type;

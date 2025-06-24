@@ -1,11 +1,11 @@
 package org.finalproject.movierenting.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.finalproject.movierenting.dto.FilmDTO;
 import org.finalproject.movierenting.entity.Film;
 import org.finalproject.movierenting.repository.FilmRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -29,8 +29,8 @@ public class FilmService {
         return filmRepository.findByAvailable(true);
     }
 
-    public Optional<Film> getFilm(UUID id) {
-        return filmRepository.findById(id);
+    public Film getFilm(UUID id) {
+        return filmRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Film does not Exist"));
     }
 
     public void saveFilm(FilmDTO filmDTO) {
@@ -45,9 +45,5 @@ public class FilmService {
         filmRepository.deleteById(id);
         return "Film Deleted Successfully!";
     }
-
-
-
-
 
 }

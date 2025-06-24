@@ -28,6 +28,7 @@ public class Film {
     private int rentalDuration; // In days
     private Date releaseDate;
     private Date added;
-
+    @Version
+    private int ver;
 
 }

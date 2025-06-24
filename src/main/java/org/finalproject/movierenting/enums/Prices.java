@@ -1,7 +1,7 @@
 package org.finalproject.movierenting.enums;
 
 import lombok.Getter;
-// If order of enums changes, prices may get affected in the database, so new pricing should be added to the end, or prices should be saved in String format
+// If the order of enums changes, prices may get affected in the database, so new pricing should be added to the end, or prices should be saved in String format
 @Getter
 public enum Prices {
     BASIC_PRICE(3),

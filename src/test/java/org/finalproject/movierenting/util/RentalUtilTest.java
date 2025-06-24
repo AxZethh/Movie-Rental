@@ -24,9 +24,9 @@ public class RentalUtilTest {
 
 
     RentalUtil rentalUtil = new RentalUtil();
-
     List<Film> films = new ArrayList<>();
     Rental rental = new Rental();
+    Rental rentalWithBonus = new Rental();
 
     @BeforeEach
     public void setUp() {
@@ -60,6 +60,12 @@ public class RentalUtilTest {
         films.add(film1);
         films.add(film2);
 
+        rentalWithBonus.setId(UUID.randomUUID());
+        rentalWithBonus.setFilms(films);
+        rentalWithBonus.setConsumer(consumer);
+        rentalWithBonus.setTotalPrice(rentalUtil.calculateTotalPrice(films));
+        rentalWithBonus.setPaymentType(PaymentType.BONUS);
+
         rental.setId(UUID.randomUUID());
         rental.setFilms(films);
         rental.setConsumer(consumer);
@@ -83,4 +89,18 @@ public class RentalUtilTest {
         receipt.forEach(System.out::println);
 
     }
+    @Test
+    public void givenRental_shouldReturnReceiptWherePayedInBonus() {
+        List<String> receipt = rentalUtil.getReceipt(rentalWithBonus);
+        receipt.forEach(System.out::println);
+    }
+
+    @Test
+    public void givenListOfFilms_shouldReturnTotalBonusCost() {
+        int expected = 200;
+        int result = rentalUtil.calcUsedBonus(films);
+        assertEquals(expected,result);
+    }
+
+
 }

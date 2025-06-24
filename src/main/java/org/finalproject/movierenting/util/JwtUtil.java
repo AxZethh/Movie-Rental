@@ -27,6 +27,7 @@ public class JwtUtil {
                 .expiration(expiration)
                 .compact();
     }
+
     public Claims validateToken(String token) {
 
         return Jwts.parser().verifyWith(secretKey)

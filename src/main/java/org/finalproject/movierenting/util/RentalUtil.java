@@ -12,31 +12,39 @@ import java.util.List;
 @Component
 public class RentalUtil {
 
-    private final int priceInBonus = 25;
-
     public List<String> getReceipt(Rental rental) {
         List<String> receipt = new ArrayList<>();
         PaymentType paymentType = rental.getPaymentType();
-        if(paymentType == PaymentType.CARD || paymentType == PaymentType.CASH) {
-            for (Film film : rental.getFilms()) {
-                receipt.add(String.format("%s ( %s ) %d days %d EUR",
-                        film.getTitle(),
-                        film.getFilmType(),
-                        film.getRentalDuration(),
-                        film.getPriceType().getPrice() * film.getRentalDuration()));
-            }
-        } else if (paymentType == PaymentType.BONUS) {
-            for (Film film : rental.getFilms()) {
-                receipt.add(String.format("%s ( %s ) %d days (Paid with %d Bonus points)",
-                        film.getTitle(),
-                        film.getFilmType(),
-                        film.getRentalDuration(),
-                        getBonusCostPerFilm(film.getRentalDuration())));
-            }
+
+        for (Film film : rental.getFilms()) {
+            receipt.add(paymentType == PaymentType.BONUS
+                    ? getReceiptLineBonus(film)
+                    : getReceiptLine(film));
+        }
+
+        if (paymentType == PaymentType.BONUS) {
             receipt.add("Remaining Bonus Points: " + rental.getConsumer().getBonusPoints());
         }
+
         receipt.add("Total Price: " + rental.getTotalPrice() + " EUR");
         return receipt;
+    }
+
+    private String getReceiptLine(Film film) {
+        int cost = film.getPriceType().getPrice() * film.getRentalDuration();
+        return String.format("%s ( %s ) %d days %d EUR",
+                film.getTitle(),
+                film.getFilmType(),
+                film.getRentalDuration(),
+                cost);
+    }
+
+    private String getReceiptLineBonus(Film film) {
+        return String.format("%s ( %s ) %d days (Paid with %d Bonus points)",
+                film.getTitle(),
+                film.getFilmType(),
+                film.getRentalDuration(),
+                getBonusCostPerFilm(film.getRentalDuration()));
     }
 
     public int calcGainedBonus(List<Film> films) {
@@ -59,7 +67,6 @@ public class RentalUtil {
         for(Film film : films) {
             price += film.getPriceType().getPrice() * film.getRentalDuration();
         }
-
         return price;
     }
 
@@ -72,6 +79,7 @@ public class RentalUtil {
     }
 
     public int getBonusCostPerFilm(int days) {
+        int priceInBonus = Prices.BONUS_PRICE.getPrice();
         return days * priceInBonus;
     }
 }
