@@ -69,10 +69,10 @@ class RentalServiceTest {
         films = new ArrayList<>();
 
         Authentication authentication = mock(Authentication.class);
-        when(authentication.getPrincipal()).thenReturn(consumer.getEmail());
+        lenient().when(authentication.getPrincipal()).thenReturn(consumer.getEmail());
 
         SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+        lenient().when(securityContext.getAuthentication()).thenReturn(authentication);
 
         SecurityContextHolder.setContext(securityContext);
     }
@@ -89,7 +89,7 @@ class RentalServiceTest {
     }
 
     @Test
-    void givenListOfFilms_shouldSaveRentalAndReturnReceipt() {
+    void givenValidRentRequestDTO_shouldSaveRentalAndReturnReceipt() {
 
         film1 = buildFilm("Something", FilmType.REGULAR_FILM,Prices.BASIC_PRICE,4);
         film2 = buildFilm("Something II", FilmType.NEW_RELEASE,Prices.PREMIUM_PRICE,2);
