@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.FinalProject</groupId>
     <artifactId>MovieRenting</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>MovieRenting</name>
     <description>MovieRenting</description>
     <url/>
